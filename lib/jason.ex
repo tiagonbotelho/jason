@@ -14,9 +14,11 @@ defmodule Jason do
 
   @type strings :: :reference | :copy
 
-  @type floats :: :native | :decimals
+  @type floats :: :native | :decimals | (String.t(), String.t() -> term)
 
-  @type decode_opt :: {:keys, keys} | {:strings, strings} | {:floats, floats}
+  @type ints :: :native | (String.t() -> term)
+
+  @type decode_opt :: {:keys, keys} | {:strings, strings} | {:floats, floats} | {:ints, ints}
 
   @doc """
   Parses a JSON value from `input` iodata.
@@ -230,6 +232,6 @@ defmodule Jason do
   end
 
   defp format_decode_opts(opts) do
-    Enum.into(opts, %{keys: :strings, strings: :reference, floats: :native})
+    Enum.into(opts, %{keys: :strings, strings: :reference, floats: :native, ints: :native})
   end
 end

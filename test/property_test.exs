@@ -15,9 +15,25 @@ if Code.ensure_loaded?(ExUnitProperties) do
       end
     end
 
+    property "integer literal roundtrip" do
+      check all integer <- integer() do
+        int_decode = fn (string) -> string end
+        literal = encode(integer)
+        assert decode(literal, ints: int_decode) == literal
+      end
+    end
+
     property "float roundtrip" do
       check all float <- float() do
         assert decode(encode(float)) == float
+      end
+    end
+
+    property "float literal roundtrip" do
+      check all float <- float() do
+        float_decode = fn (_string, token) -> token end
+        literal = encode(float)
+        assert decode(literal, floats: float_decode) == literal
       end
     end
 
