@@ -122,6 +122,32 @@ defmodule Jason.DecodeTest do
              Decimal.new("123456789.123456789e123")
   end
 
+  test "parsing floats with callback" do
+    float_decode = fn (_string, token) -> token end
+    assert parse!("0.1", floats: float_decode) == "0.1"
+    assert parse!("-0.1", floats: float_decode) == "-0.1"
+    assert parse!("1.0e0", floats: float_decode) == "1.0e0"
+    assert parse!("1.0e+0", floats: float_decode) == "1.0e+0"
+    assert parse!("0.1e1", floats: float_decode) == "0.1e1"
+    assert parse!("0.1e-1", floats: float_decode) == "0.1e-1"
+    assert parse!("99.99e99", floats: float_decode) == "99.99e99"
+    assert parse!("-99.99e-99", floats: float_decode) == "-99.99e-99"
+    assert parse!("123456789.123456789e123", floats: float_decode) == "123456789.123456789e123"
+    assert parse!("0e0", floats: float_decode) == "0e0"
+    assert parse!("0E0", floats: float_decode) == "0E0"
+    assert parse!("1e0", floats: float_decode) == "1e0"
+    assert parse!("1E0", floats: float_decode) == "1E0"
+    assert parse!("1e+0", floats: float_decode) == "1e+0"
+  end
+
+  test "parsing ints with callback" do
+    int_decode = fn (string) -> string end
+    assert parse!("0", ints: int_decode) == "0"
+    assert parse!("1", ints: int_decode) == "1"
+    assert parse!("-0", ints: int_decode) == "-0"
+    assert parse!("-1", ints: int_decode) == "-1"
+  end
+
   test "arrays" do
     assert_fail_with "[", "unexpected end of input at position 1"
     assert_fail_with "[,", "unexpected byte at position 1: 0x2C (',')"
